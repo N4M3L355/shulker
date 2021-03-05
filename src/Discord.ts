@@ -115,9 +115,9 @@ class Discord {
       }
     } else {
       if (this.config.MINECRAFT_TELLRAW_DOESNT_EXIST) {
-        command = `/say ${this.makeMinecraftTellraw(message)}`
+        command = `say ${this.makeMinecraftTellraw(message)}`
       } else {
-        command = `/tellraw @a ${this.makeMinecraftTellraw(message)}`
+        command = `tellraw @a ${this.makeMinecraftTellraw(message)}`
       }
     }
 
@@ -143,11 +143,13 @@ class Discord {
       username: emojiStrip(message.author.username),
       nickname: message.member.nickname ? emojiStrip(message.member.nickname) : emojiStrip(message.author.username),
       discriminator: message.author.discriminator,
-      text: emojiStrip(message.cleanContent)
+      text: (message.cleanContent)
     }
     // hastily use JSON to encode the strings
     for (const v of Object.keys(variables)) {
-      variables[v] = JSON.stringify(variables[v]).slice(1,-1)
+      variables[v] = variables[v].replace(/[^\0-~]/g, function(ch) {
+        return "\\u" + ("000" + ch.charCodeAt(0).toString(16)).slice(-4);
+    });
     }
     
     if (this.config.MINECRAFT_TELLRAW_DOESNT_EXIST)
@@ -206,7 +208,7 @@ class Discord {
     }
 
     return {
-      username: username,
+      username: username.replace(/ /g,"_"),
       content: message,
       'avatar_url': avatarURL,
     }

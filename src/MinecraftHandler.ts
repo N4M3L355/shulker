@@ -23,7 +23,7 @@ class MinecraftHandler {
   }
 
   private static fixMinecraftUsername (username: string) {
-    return username.replace(/(§[A-Z-a-z0-9])/g, '')
+    return username.replace(/(§[A-Z-a-z0-9])/g, '').replace(/ /g,"_")
   }
 
   private parseLogLine (data: string): LogLine {
@@ -69,7 +69,7 @@ class MinecraftHandler {
         return null
       }
 
-      const username = MinecraftHandler.fixMinecraftUsername(matches[1])
+      const username = MinecraftHandler.fixMinecraftUsername(matches[1]) //yeet
       const message = matches[2]
       if (this.config.DEBUG) {
         console.log('[DEBUG] Username: ' + matches[1])
